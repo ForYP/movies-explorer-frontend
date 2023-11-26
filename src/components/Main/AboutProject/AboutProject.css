@@ -1,0 +1,137 @@
+.about-project {
+  background: #202020;
+  margin: 0px 70px;
+  padding-top: 110px;
+}
+
+.about-project__title {
+  margin: 0;
+  margin-bottom: 23px;
+  font-size: 22px;
+  line-height: 27px;
+  font-weight: 400;
+  letter-spacing: -0.88px;
+}
+
+.about-project__content {
+  border-top: solid 1px #dadada;
+  display: grid;
+  column-gap: 40px;
+  grid-template-columns: repeat(2, 1fr);
+  padding-top: 70px;
+  margin-bottom: 110px;
+}
+
+.about-project__block {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-project__block-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  margin-bottom: 27px;
+}
+
+.about-project__block-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.about-project__chart {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  margin-bottom: 110px;
+}
+
+.about-project__duration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 400;
+}
+
+.about-project__duration_color_green {
+  color: #000;
+  background-color: #3ddc84;
+  height: 36px;
+}
+
+.about-project__duration_color_black {
+  background-color: #303030;
+  height: 36px;
+}
+
+.about-project__label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  color: #8b8b8b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  padding-top: 14px;
+}
+
+@media screen and (max-width: 768px) {
+  .about-project {
+    margin: 0 50px;
+    padding-top: 90px;
+  }
+  .about-project__content {
+    margin-bottom: 93px;
+  }
+  .about-project__chart {
+    margin-bottom: 90px;
+  }
+  .about-project__block-text {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .about-project__backend{
+    width: 140px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .about-project {
+    margin: 0 18px;
+    padding: 70px 0px 0px 0px;
+  }
+  .about-project__content {
+    margin-bottom: 60px;
+    padding-top: 60px;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 56px;
+  }
+  .about-project__chart {
+    margin-bottom: 69px;
+  }
+  .about-project__block-text {
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .about-project__block-title {
+    margin-bottom: 16px;
+    font-size: 18px;
+    line-height: 22px;
+  }
+  .about-project__duration,
+  .about-project__label {
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+  }
+  .about-project__backend{
+    width: 100px;
+  }
+}
