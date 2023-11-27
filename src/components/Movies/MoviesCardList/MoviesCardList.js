@@ -8,7 +8,7 @@ function MoviesCardList({ isLoading = false, buttonMore, movies }) {
       {isLoading ? (
         <Preloader />
       ) : (
-        <div className="cards__list">
+        <ul className="cards__list">
           {movies.map((movie) => {
             return (
               <MoviesCard
@@ -18,7 +18,7 @@ function MoviesCardList({ isLoading = false, buttonMore, movies }) {
               />
             );
           })}
-        </div>
+        </ul>
       )}
       <button
         className={

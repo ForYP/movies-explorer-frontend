@@ -12,7 +12,7 @@ function MoviesCard({ movie }) {
   };
 
   return (
-    <div className="card">
+    <li className="card">
       <img
         className="card__image"
         src={movie.image}
@@ -32,7 +32,7 @@ function MoviesCard({ movie }) {
           onClick={handleButtonClick}
         ></button>
       </div>
-    </div>
+    </li>
   );
 }
 

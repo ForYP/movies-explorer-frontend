@@ -9,6 +9,8 @@
   gap: 37px 24px;
   justify-content: center;
   margin-bottom: 60px;
+  list-style: none;
+  padding: 0;
 }
 
 .cards__button {

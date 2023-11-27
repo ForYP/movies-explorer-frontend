@@ -23,8 +23,6 @@
 }
 
 .portfolio__list-item {
-  display: flex;
-  justify-content: space-between;
   border-bottom: 1px solid #424242;
   padding-bottom: 20px;
 }
@@ -42,6 +40,8 @@
 }
 
 .portfolio__link {
+  display: flex;
+  justify-content: space-between;
   text-decoration: none;
   font-size: 30px;
   line-height: 50px;
