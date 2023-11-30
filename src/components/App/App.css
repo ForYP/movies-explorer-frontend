@@ -1,0 +1,13 @@
+.page {
+  font-family: "Inter", sans-serif;
+  color: #FFF;;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+html {
+background-color: #202020;
+}

@@ -1,0 +1,26 @@
+.header {
+  background-color: #073042;
+}
+
+.header_black{
+  background: #202020;
+}
+
+.header__container {
+  margin: 18px 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  .header__container {
+    margin: 18px 30px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .header__container {
+    margin: 14px 18px;
+  }
+}

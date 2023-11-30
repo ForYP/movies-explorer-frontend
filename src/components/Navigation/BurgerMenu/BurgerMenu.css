@@ -1,0 +1,146 @@
+.burger {
+  z-index: 2;
+  transition: 0.4s ease;
+}
+
+.burger__overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.burger__container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 68%;
+  height: 100%;
+  background-color: #202020;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.burger__close-button {
+  border: none;
+  background: none;
+  background-image: url("../../../images/close-icon.svg");
+  width: 22px;
+  height: 22px;
+  top: 23px;
+  right: 23px;
+  position: absolute;
+  background-position: center;
+  cursor: pointer;
+  transition: 0.6s;
+}
+
+.burger__close-button:hover {
+  opacity: 0.7;
+  transition: 0.6s;
+}
+
+.burger__menu {
+  display: flex;
+  flex-direction: column;
+  margin-top: 159px;
+  gap: 28px;
+  align-items: center;
+}
+
+.burger__link {
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+  transition: 0.6s;
+}
+
+.burger__link:hover {
+  opacity: 0.7;
+  transition: 0.6s;
+}
+
+.burger__link-active {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
+  text-decoration: none;
+  padding-bottom: 4px;
+  transition: 0.6s;
+}
+
+.burger__link-active:hover {
+  opacity: 0.7;
+  transition: 0.6s;
+}
+
+.burger__button-account {
+  width: 100px;
+  height: 32px;
+  border-radius: 40px;
+  background: #202020;
+  box-shadow: 0px 3px 14px 0px rgba(0, 0, 0, 0.08);
+  margin-bottom: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.burger__button-link {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 12px;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: 0.6s;
+  text-decoration: none;
+  gap: 7px;
+  padding: 9px 3px 9px 11px;
+}
+
+.burger__button-link:hover {
+  opacity: 0.7;
+  transition: 0.6s;
+}
+
+.burger__button-image {
+  border-radius: 50px;
+  padding: 8px;
+  background: #313131;
+}
+
+.burger-hide {
+  display: none;
+}
+
+@media screen and (min-width: 768px) {
+  .burger {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .burger__menu {
+    margin-top: 144px;
+    gap: 24px;
+  }
+  .burger__container {
+    width: 100%;
+  }
+  .burger__close-button {
+    top: 14px;
+    right: 14px;
+  }
+}

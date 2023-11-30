@@ -1,0 +1,133 @@
+.register {
+  width: 396px;
+  margin: 0 auto;
+}
+
+.register__header {
+  margin-top: 70px;
+}
+
+.register__title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 29px;
+  margin: 0;
+  padding: 40px 0;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.register__label {
+  color: #8b8b8b;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 12px;
+  margin-bottom: 10px;
+}
+
+.register__input {
+  border-radius: 8px;
+  border: none;
+  background: #2f2f2f;
+  padding: 15px;
+  color: #ffffff;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.register__input_password {
+  color: #ee3465;
+}
+
+.register__button {
+  margin-top: 69px;
+  margin-bottom: 16px;
+  background-color: #4285f4;
+  border-radius: 3px;
+  border: none;
+  padding: 13px 0 15px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: 0.7s;
+}
+
+.register__button:hover {
+  opacity: 0.7;
+  transition: 0.7s;
+}
+
+.register__signin {
+  color: #8b8b8b;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+  margin-bottom: 70px;
+}
+
+.register__link {
+  margin-left: 6px;
+  text-decoration: none;
+  color: #4285f4;
+  transition: 0.7s;
+}
+
+.register__link:hover {
+  opacity: 0.7;
+  transition: 0.7s;
+}
+
+.register__error {
+  color: #ee3465;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 12px;
+  position: relative;
+  top: -10px;
+}
+
+@media screen and (max-width: 768px) {
+  .register__header {
+    margin-top: 232px;
+  }
+  .register__signin {
+    margin-bottom: 232px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .register {
+    width: 260px;
+  }
+  .register__header {
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .register__button{
+    margin-top: 157px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .register__title {
+    padding-top: 50px;
+    padding-bottom: 80px;
+  }
+  .register__signin {
+    margin-bottom: 30px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
