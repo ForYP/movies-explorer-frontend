@@ -96,6 +96,11 @@
   top: -10px;
 }
 
+.register__button:disabled {
+  background-color: #f8f8f8;
+  color: #c2c2c2;
+}
+
 @media screen and (max-width: 768px) {
   .register__header {
     margin-top: 232px;

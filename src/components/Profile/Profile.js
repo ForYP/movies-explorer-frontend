@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "../Header/Header";
 
-const Profile = ({ loggedIn }) => {
+const Profile = ({ loggedIn, onSignOut }) => {
   const [name, setName] = useState("Сергей");
   const [email, setEmail] = useState("pochta@yandex.ru");
   const [isShown, setIsShown] = useState(true);
@@ -50,7 +50,7 @@ const Profile = ({ loggedIn }) => {
             <button className="profile__edit" onClick={clickEditButton}>
               Редактировать
             </button>
-            <button className="profile__logout">Выйти из аккаунта</button>
+            <button className="profile__logout" onClick={() => onSignOut()}>Выйти из аккаунта</button>
           </div>
         )}
 
