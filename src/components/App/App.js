@@ -182,13 +182,12 @@ function App() {
     setSavedMovies([]);
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
+    localStorage.removeItem("movies");
+    localStorage.removeItem("allMovies");
     localStorage.removeItem("savedMovies");
     localStorage.removeItem("shortMovies");
+    localStorage.removeItem("movieSearch");
     localStorage.removeItem("shortSavedMovies");
-    localStorage.removeItem("allMovies");
-    localStorage.removeItem("movieSearch");
-    localStorage.removeItem("movieSearch");
-    localStorage.removeItem("movies"); 
     navigate("/");
   }
 
