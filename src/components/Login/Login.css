@@ -40,9 +40,9 @@
   line-height: 16px;
 }
 
-.login__input:nth-child(5) {
+/* .login__input:nth-child(5) {
   margin-bottom: 0px;
-}
+} */
 
 .login__button {
   margin-top: 179px;
@@ -84,6 +84,25 @@
 .login__link:hover {
   opacity: 0.7;
   transition: 0.7s;
+}
+
+.login__button:disabled {
+  opacity: 1;
+  background-color: #f8f8f8;
+  color: #c2c2c2;
+}
+
+.login__error {
+  color: #ee3465;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 12px;
+  position: relative;
+  top: -10px;
+}
+
+.login__input_password {
+  color: #ee3465;
 }
 
 @media screen and (max-width: 768px) {

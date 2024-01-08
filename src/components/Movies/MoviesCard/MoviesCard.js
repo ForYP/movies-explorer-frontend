@@ -1,36 +1,60 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function MoviesCard({ movie }) {
-  const location = useLocation();
-  const isSavedMoviesPage = location.pathname === "/saved-movies";
+import { convertMinToHours } from "../../../utils/utils";
+import useScreenWidth from "../../../hooks/useScreenWidth";
 
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
+function MoviesCard({ movie, isSavedMoviesPage, changeSave, saved }) {
+  const screenWidth = useScreenWidth();
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleButtonClick = () => {
-    setIsButtonPressed(!isButtonPressed);
+    changeSave(movie);
   };
+
+  useEffect(() => {
+    if (screenWidth < 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [screenWidth]);
 
   return (
     <li className="card">
-      <img
-        className="card__image"
-        src={movie.image}
-        alt={`Фильм - ${movie.title}`}
-      />
+      <Link
+        to={movie.trailerLink}
+        className="card__link"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          className="card__image"
+          src={
+            isSavedMoviesPage
+              ? movie.image
+              : `https://api.nomoreparties.co${movie.image.url}`
+          }
+          alt={`Фильм - ${movie.nameRU}`}
+        />
+      </Link>
       <div className="card__content">
         <div className="card__description">
-          <h2 className="card__title">{movie.title}</h2>
-          <span className="card__duration">{movie.duration}</span>
+          <h2 className="card__title">{movie.nameRU}</h2>
+          <span className="card__duration">
+            {convertMinToHours(movie.duration)}
+          </span>
         </div>
 
         <button
           className={`card__button 
-          ${!isButtonPressed && movie.saved ? "card__button_save" : ""}
           ${isSavedMoviesPage ? "card__button_delete" : ""} 
+          ${!isSavedMoviesPage && saved && isMobile ? "card__button_save" : ""}
+          ${!isSavedMoviesPage && saved && !isMobile ? "card__button_save" : ""}
           `}
+          type="button"
           onClick={handleButtonClick}
-        ></button>
+        />
       </div>
     </li>
   );

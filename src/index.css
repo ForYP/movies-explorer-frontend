@@ -19,6 +19,7 @@
 @import url("./components/Main/Portfolio/Portfolio.css");
 
 /* Movies */
+@import url("./components/Movies/Movies.css");
 @import url("./components/Movies/SearchForm/SearchForm.css");
 @import url("./components/Movies/FilterCheckbox/FilterCheckbox.css");
 @import url("./components/Movies/MoviesCardList/MoviesCardList.css");
