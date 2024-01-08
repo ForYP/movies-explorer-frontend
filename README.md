@@ -3,8 +3,10 @@
 Репозиторий для дипломного проекта  `BeatFilm`, включающий в себя frontend части приложения.
 
 ## Ссылки:
-["Ссылка на пул реквест: https://github.com/pull_request"](https://github.com/ForYP/movies-explorer-frontend/pull/2#issue-2069801208)
-["Ссылка на проект: https://beatfilm.nomoredomainsrocks.ru"](https://beatfilm.nomoredomainsrocks.ru/)
+
+1.["Ссылка на пул реквест: https://github.com/pull_request"](https://github.com/ForYP/movies-explorer-frontend/pull/2#issue-2069801208)
+
+2.["Ссылка на проект: https://beatfilm.nomoredomainsrocks.ru"](https://beatfilm.nomoredomainsrocks.ru/)
 
 
 ## Макет 
