@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import useForm from "../../hooks/useForm";
 import Logo from "../Logo/Logo";
 
-function Login({onLogin}) {
-  const { values, errors, handleChange, isFormValid } = useForm();
+function Login({ onLogin, userMessageError }) {
+  const { values, errors, handleChange, isValid, resetForm } = useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -13,6 +13,7 @@ function Login({onLogin}) {
     }
     onLogin(values);
   };
+
   return (
     <section className="login">
       <div className="login__header">
@@ -29,25 +30,28 @@ function Login({onLogin}) {
           name="email"
           id="email"
           placeholder="pochta@yandex.ru"
+          pattern="[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}"
           required
-          value={values.email || ''}
+          value={values.email || ""}
           onChange={handleChange}
         />
-        <span className="login__error"></span>
+        <span className="login__error">{errors.email}</span>
         <label className="login__label" htmlFor="password">
           Пароль
         </label>
         <input
-          className="login__input"
+          className="login__input login__input_password"
           type="password"
           name="password"
           id="password"
+          placeholder="Пароль"
           required
-          value={values.password || ''}
+          value={values.password || ""}
           onChange={handleChange}
         />
-        <span className="login__error"></span>
-        <button className="login__button" type="submit">
+        <span className="login__error">{errors.password}</span>
+        <span className="login__error">{userMessageError}</span>
+        <button className="login__button" type="submit" disabled={!isValid}>
           Войти
         </button>
       </form>

@@ -33,10 +33,6 @@
   opacity: 0.7;
 }
 
-.cards__button_hidden {
-  display: none;
-}
-
 @media screen and (max-width: 768px){
   .cards {
     margin: 0 30px;

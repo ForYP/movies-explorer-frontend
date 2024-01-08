@@ -13,19 +13,20 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 import mainApi from "../../utils/MainApi";
-import moviesApi from "../../utils/MoviesApi";
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  // const path = location.pathname;
+  const path = location.pathname;
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [movies, setMovies] = useState([]);
-  const [saveMovies, setSaveMovies] = useState([]);
+  const [savedMovies, setSavedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [userMessage, setUserMessage] = useState("");
+  const [userMessageError, setUserMessageError] = useState("");
+
+  /* РЕГИСТРАЦИЯ */
 
   function handleRegister({ name, email, password }) {
     return mainApi
@@ -33,73 +34,150 @@ function App() {
       .then(() => {
         handleLogin({ email, password });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.log(error);
+        setUserMessageError("Что-то пошло не так...");
+        setTimeout(() => {
+          setUserMessageError("");
+        }, 2000);
+      });
   }
+
+  /* ВХОД */
 
   function handleLogin({ email, password }) {
     return mainApi
       .login(email, password)
-      .then((res) => {
-        localStorage.setItem("jwt", res.token);
-        mainApi.getSaveMovies().then((movies) => {
+      .then(({ token }) => {
+        localStorage.setItem("jwt", token);
+        Promise.all([
+          mainApi.checkToken(token),
+          mainApi.getSaveMovies(token),
+        ]).then(([user, movies]) => {
+          setCurrentUser(user);
+          setSavedMovies(movies);
           setIsLoggedIn(true);
-          setMovies(movies);
           navigate("/movies");
         });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.log(error);
+        setUserMessageError("Неправильные почта или пароль");
+        setTimeout(() => {
+          setUserMessageError("");
+        }, 2000);
+      });
   }
 
-  // проверяем наличие токена авторизации
+  /* РЕДАКТИРОВАНИЕ ПРОФИЛЯ */
 
-  // useEffect(() => {
-  //   const jwt = localStorage.getItem("jwt");
-  //   if (jwt) {
-  //     setIsLoggedIn(true);
-  //     navigate(path);
-  //   } else {
-  //     setIsLoggedIn(false);
-  //   }
-  // }, [navigate, path]);
+  function handleUpdateUser(newUserInfo) {
+    const jwt = localStorage.getItem("jwt");
+    setIsLoading(true);
+    mainApi
+      .setUserInfo(newUserInfo, jwt)
+      .then((user) => {
+        setCurrentUser(user);
+        setUserMessage("Профиль отредактирован успешно");
+        setUserMessageError("");
+        setTimeout(() => {
+          setUserMessage("");
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+        setUserMessageError("При обновлении профиля произошла ошибка");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  /* СОХРАНЕНИЕ И УДАЛЕНИЕ ФИЛЬМОВ */
+
+  const changeSaveMovie = (movie) => {
+    const jwt = localStorage.getItem("jwt");
+
+    const handledMovie = savedMovies.find((item) => {
+      if (location.pathname === "/saved-movies") {
+        return item.movieId === movie.movieId;
+      } else {
+        return item.movieId === movie.id;
+      }
+    });
+
+    const isLiked = Boolean(handledMovie);
+
+    const id = handledMovie ? handledMovie._id : movie._id;
+
+    if (isLiked) {
+      mainApi
+        .deleteMovie(id, jwt)
+        .then(() => {
+          const updateSavedMovies = savedMovies.filter(
+            (item) => item._id !== id
+          );
+          localStorage.setItem(
+            "savedMovies",
+            JSON.stringify(updateSavedMovies)
+          );
+          setSavedMovies(updateSavedMovies);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      mainApi
+        .saveMovie(movie, jwt)
+        .then((newSavedMovie) => {
+          setSavedMovies((prev) => [...prev, newSavedMovie]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  /* ПРОВЕРКА ТОКЕНА АВТОРИЗАЦИИ*/
+
+  function handleCheckToken() {
+    const jwt = localStorage.getItem("jwt");
+
+    if (jwt) {
+      mainApi
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setIsLoggedIn(true);
+            setCurrentUser(res);
+            navigate(path);
+          } else {
+            setIsLoggedIn(false);
+          }
+        })
+        .catch(console.error);
+    }
+  }
 
   useEffect(() => {
-    const path = location.pathname;
-    function handleCheckToken() {
-      const jwt = localStorage.getItem("jwt");
+    handleCheckToken();
+  }, []);
 
-      if (jwt) {
-        mainApi
-        .checkToken(jwt)
-          .then((res) => {
-            if (res) {
-              setIsLoggedIn(true);
-              setCurrentUser(res.user);
-              console.log(setCurrentUser(res.user));
-              navigate(path);
-            } else {
-              setIsLoggedIn(false);
-            }
+  useEffect(() => {
+    function fetchData() {
+      if (isLoggedIn) {
+        return mainApi
+          .getSaveMovies()
+          .then((movies) => {
+            setSavedMovies(movies);
           })
           .catch(console.error);
       }
     }
-    handleCheckToken();
-  }, [navigate]);
-
-
-  // проверяем наличие токена у пользователя
-  useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      Promise.all([mainApi.getUserInfo(jwt), mainApi.getSaveMovies(jwt)])
-        .then(([user, movies]) => {
-          setCurrentUser(user);
-          setSaveMovies(movies);
-        })
-        .catch(console.error);
-    }
+    fetchData();
   }, [isLoggedIn]);
 
+  /* ВЫХОД */
   function handleSignOut() {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
@@ -115,7 +193,13 @@ function App() {
             path="/movies"
             element={
               <ProtectedRoute loggedIn={isLoggedIn}>
-                <Movies loggedIn={isLoggedIn} movies={movies} />
+                <Movies
+                  loggedIn={isLoggedIn}
+                  isLoading={isLoading}
+                  onLoading={setIsLoading}
+                  savedMovies={savedMovies}
+                  changeSave={changeSaveMovie}
+                />
               </ProtectedRoute>
             }
           />
@@ -123,7 +207,13 @@ function App() {
             path="/saved-movies"
             element={
               <ProtectedRoute loggedIn={isLoggedIn}>
-                <SavedMovies loggedIn={isLoggedIn} />
+                <SavedMovies
+                  loggedIn={isLoggedIn}
+                  isLoading={isLoading}
+                  onLoading={setIsLoading}
+                  savedMovies={savedMovies}
+                  changeSave={changeSaveMovie}
+                />
               </ProtectedRoute>
             }
           />
@@ -131,20 +221,34 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute loggedIn={isLoggedIn}>
-                <Profile loggedIn={isLoggedIn} onSignOut={handleSignOut} />
+                <Profile
+                  loggedIn={isLoggedIn}
+                  onSignOut={handleSignOut}
+                  onUpdateUser={handleUpdateUser}
+                  userMessage={userMessage}
+                  userMessageError={userMessageError}
+                />
               </ProtectedRoute>
             }
           />
           <Route
             path="/signup"
             element={
-              <Register onRegister={handleRegister} isLoading={isLoading} />
+              <Register
+                onRegister={handleRegister}
+                userMessageError={userMessageError}
+              />
             }
           />
           <Route
             path="/signin"
             loggedIn={isLoggedIn}
-            element={<Login onLogin={handleLogin} />}
+            element={
+              <Login
+                onLogin={handleLogin}
+                userMessageError={userMessageError}
+              />
+            }
           />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import Logo from "../Logo/Logo";
 import useForm from "../../hooks/useForm";
 
-function Register({ onRegister, messageError }) {
-  const { values, errors, handleChange, isFormValid } = useForm();
+function Register({ onRegister, userMessageError }) {
+  const { values, errors, handleChange, isValid, resetForm } = useForm();
   const handleSubmit = (event) => {
     event.preventDefault();
     onRegister(values);
+    resetForm();
   };
   return (
     <section className="register">
@@ -27,7 +28,7 @@ function Register({ onRegister, messageError }) {
           minLength={2}
           maxLength={30}
           required
-          value={values.name || ''}
+          value={values.name || ""}
           onChange={handleChange}
           placeholder="Имя"
         />
@@ -40,8 +41,9 @@ function Register({ onRegister, messageError }) {
           type="email"
           id="email"
           name="email"
+          pattern='[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}'
           required
-          value={values.email || ''}
+          value={values.email || ""}
           onChange={handleChange}
           placeholder="E-mail"
         />
@@ -55,13 +57,17 @@ function Register({ onRegister, messageError }) {
           id="password"
           name="password"
           required
-          value={values.password || ''}
+          value={values.password || ""}
           onChange={handleChange}
           placeholder="Пароль"
         />
         <span className="register__error">{errors.password}</span>
-        <span className="register__error">{messageError}</span>
-        <button className="register__button" type="submit" disabled={!isFormValid}>
+        <span className="register__error">{userMessageError}</span>
+        <button
+          className="register__button"
+          type="submit"
+          disabled={!isValid}
+        >
           Зарегистрироваться
         </button>
       </form>

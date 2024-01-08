@@ -52,8 +52,8 @@ class MainApi {
     return this._request(`${this._url}/users/me`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${jwt}`,
+        "Content-Type": "application/json",
       },
     });
   }
@@ -67,16 +67,16 @@ class MainApi {
     });
   }
 
-  setUserInfo(name, email) {
+  setUserInfo(data, jwt) {
     return this._request(`${this._url}/users/me`, {
       method: "PATCH",
       headers: {
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: name,
-        email: email,
+        name: data.name,
+        email: data.email,
       }),
     });
   }
@@ -91,11 +91,11 @@ class MainApi {
     });
   }
 
-  saveMovie(movie) {
+  saveMovie(movie, jwt) {
     return this._request(`${this._url}/movies`, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -114,11 +114,11 @@ class MainApi {
     });
   }
 
-  deleteMovie(movieId) {
-    return this._request(`${this._url}/movies/${movieId}`, {
+  deleteMovie(id, jwt) {
+    return this._request(`${this._url}/movies/${id}`, {
       method: "DELETE",
       headers: {
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json",
       },
     });

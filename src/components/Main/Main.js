@@ -10,6 +10,7 @@ import Portfolio from "./Portfolio/Portfolio";
 import Footer from "../Footer/Footer";
 
 function Main({ loggedIn }) {
+
   return (
     <>
       <Header loggedIn={loggedIn} />
