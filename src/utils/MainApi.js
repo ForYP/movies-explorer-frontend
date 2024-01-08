@@ -67,11 +67,11 @@ class MainApi {
     });
   }
 
-  setUserInfo(data, jwt) {
+  setUserInfo(data) {
     return this._request(`${this._url}/users/me`, {
       method: "PATCH",
       headers: {
-        authorization: `Bearer ${jwt}`,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -91,11 +91,11 @@ class MainApi {
     });
   }
 
-  saveMovie(movie, jwt) {
+  saveMovie(movie) {
     return this._request(`${this._url}/movies`, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${jwt}`,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -114,11 +114,11 @@ class MainApi {
     });
   }
 
-  deleteMovie(id, jwt) {
+  deleteMovie(id) {
     return this._request(`${this._url}/movies/${id}`, {
       method: "DELETE",
       headers: {
-        authorization: `Bearer ${jwt}`,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
         "Content-Type": "application/json",
       },
     });

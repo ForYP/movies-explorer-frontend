@@ -51,9 +51,11 @@ function App() {
       .then(({ token }) => {
         localStorage.setItem("jwt", token);
         Promise.all([
-          mainApi.checkToken(token),
-          mainApi.getSaveMovies(token),
+          mainApi.getUserInfo(),
+          mainApi.getSaveMovies(),
         ]).then(([user, movies]) => {
+          console.dir(user);
+          console.dir(movies);
           setCurrentUser(user);
           setSavedMovies(movies);
           setIsLoggedIn(true);
