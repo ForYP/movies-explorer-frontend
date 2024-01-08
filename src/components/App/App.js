@@ -50,15 +50,14 @@ function App() {
       .login(email, password)
       .then(({ token }) => {
         localStorage.setItem("jwt", token);
-        Promise.all([
-          mainApi.getUserInfo(),
-          mainApi.getSaveMovies(),
-        ]).then(([user, movies]) => {
-          setCurrentUser(user);
-          setSavedMovies(movies);
-          setIsLoggedIn(true);
-          navigate("/movies");
-        });
+        Promise.all([mainApi.getUserInfo(), mainApi.getSaveMovies()]).then(
+          ([user, movies]) => {
+            setCurrentUser(user);
+            setSavedMovies(movies);
+            setIsLoggedIn(true);
+            navigate("/movies");
+          }
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -179,8 +178,17 @@ function App() {
 
   /* ВЫХОД */
   function handleSignOut() {
+    setCurrentUser({});
+    setSavedMovies([]);
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
+    localStorage.removeItem("savedMovies");
+    localStorage.removeItem("shortMovies");
+    localStorage.removeItem("shortSavedMovies");
+    localStorage.removeItem("allMovies");
+    localStorage.removeItem("movieSearch");
+    localStorage.removeItem("movieSearch");
+    localStorage.removeItem("movies"); 
     navigate("/");
   }
 
@@ -234,20 +242,24 @@ function App() {
           <Route
             path="/signup"
             element={
-              <Register
-                onRegister={handleRegister}
-                userMessageError={userMessageError}
-              />
+              <ProtectedRoute loggedIn={!isLoggedIn}>
+                <Register
+                  onRegister={handleRegister}
+                  userMessageError={userMessageError}
+                />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/signin"
             loggedIn={isLoggedIn}
             element={
-              <Login
-                onLogin={handleLogin}
-                userMessageError={userMessageError}
-              />
+              <ProtectedRoute loggedIn={!isLoggedIn}>
+                <Login
+                  onLogin={handleLogin}
+                  userMessageError={userMessageError}
+                />
+              </ProtectedRoute>
             }
           />
           <Route path="*" element={<NotFoundPage />} />

@@ -4,6 +4,7 @@ const useForm = () => {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const handleChange = (event) => {
     const name = event.target.name;
