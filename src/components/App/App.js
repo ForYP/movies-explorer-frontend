@@ -54,8 +54,6 @@ function App() {
           mainApi.getUserInfo(),
           mainApi.getSaveMovies(),
         ]).then(([user, movies]) => {
-          console.dir(user);
-          console.dir(movies);
           setCurrentUser(user);
           setSavedMovies(movies);
           setIsLoggedIn(true);
@@ -183,7 +181,7 @@ function App() {
   function handleSignOut() {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
-    navigate("/signin");
+    navigate("/");
   }
 
   return (
