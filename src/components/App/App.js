@@ -139,26 +139,25 @@ function App() {
 
   /* ПРОВЕРКА ТОКЕНА АВТОРИЗАЦИИ*/
 
-  function handleCheckToken() {
-    const jwt = localStorage.getItem("jwt");
-
-    if (jwt) {
-      mainApi
-        .checkToken(jwt)
-        .then((res) => {
-          if (res) {
-            setIsLoggedIn(true);
-            setCurrentUser(res);
-            navigate(path);
-          } else {
-            setIsLoggedIn(false);
-          }
-        })
-        .catch(console.error);
-    }
-  }
-
   useEffect(() => {
+    function handleCheckToken() {
+      const jwt = localStorage.getItem("jwt");
+
+      if (jwt) {
+        mainApi
+          .checkToken(jwt)
+          .then((res) => {
+            if (res) {
+              setIsLoggedIn(true);
+              setCurrentUser(res);
+              navigate(path);
+            } else {
+              setIsLoggedIn(false);
+            }
+          })
+          .catch(console.error);
+      }
+    }
     handleCheckToken();
   }, []);
 

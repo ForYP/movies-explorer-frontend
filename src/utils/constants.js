@@ -11,3 +11,4 @@ export const MOVIES_ROW_MOBILE = 5;
 export const MOVIES_LINE_DESKTOP = 3;
 export const MOVIES_LINE_MOBILE = 2;
 
+export const SHORT_FILM = 40;
