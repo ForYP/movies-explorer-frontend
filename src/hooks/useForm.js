@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
-const useForm = () => {
-  const [values, setValues] = useState({});
+const useForm = (initialValues = {}) => {
+  const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [isPending, setIsPending] = useState(false);

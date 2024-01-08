@@ -3,7 +3,7 @@ import Header from "../Header/Header";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
-import { filterMovies, filterShorts } from "../../utils/utils";
+import { filterMovies } from "../../utils/utils";
 import { useLocation } from "react-router-dom";
 import Preloader from "../Movies/Preloader/Preloader";
 
@@ -15,7 +15,27 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
   const [userMessage, setUserMessage] = useState("");
   const location = useLocation();
 
-  const handleSearchSubmit = (inputValue) => {
+  const handleFilteredMovies = (movies, userRequest, shortMoviesCheckbox) => {
+    const moviesList = filterMovies(
+      savedMovies,
+      userRequest,
+      shortMoviesCheckbox
+    );
+
+    if (moviesList.length === 0) {
+      setUserMessage("Ничего не найдено");
+    } else {
+      setUserMessage("");
+
+      // setShowedMovies(moviesList);
+    }
+    setFilteredMovies(moviesList);
+  };
+
+  const handleSearchSubmit = (inputValue, checkboxState) => {
+    setSearchRequest(inputValue);
+    setShortMovies(checkboxState);
+    handleFilteredMovies(savedMovies, inputValue, checkboxState);
     if (inputValue === undefined || inputValue.trim().length === 0) {
       setUserMessage("Нужно ввести ключевое слово");
       setTimeout(() => {
@@ -23,61 +43,52 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
       }, 2000);
       return;
     }
-
-    const moviesList = filterMovies(savedMovies, inputValue, shortMovies);
-    setSearchRequest(inputValue);
-    if (moviesList.length === 0) {
-      setUserMessage("Ничего не найдено");
-    } else {
-      setUserMessage("");
-      setFilteredMovies(moviesList);
-      setShowedMovies(moviesList);
-    }
-  };
-
-  const handleShortsFilms = () => {
-    if (!shortMovies) {
-      setShortMovies(true);
-      localStorage.setItem("shortSavedMovies", true);
-      setShowedMovies(filterShorts(filteredMovies));
-      filterShorts(filteredMovies).length === 0
-        ? setUserMessage("Ничего не найдено")
-        : setUserMessage("");
-    } else {
-      setShortMovies(false);
-      localStorage.setItem("shortSavedMovies", false);
-      filteredMovies.length === 0
-        ? setUserMessage("Ничего не найдено")
-        : setUserMessage("");
-      setShowedMovies(filteredMovies);
-    }
   };
 
   useEffect(() => {
-    if (localStorage.getItem("shortSavedMovies") === "true") {
-      setShowedMovies(filterShorts(savedMovies));
-    } else {
-      const moviesList = filterMovies(savedMovies, searchRequest, shortMovies);
-      setShowedMovies(moviesList);
+    if ((!searchRequest || searchRequest.length === 0) && !shortMovies) {
+      setFilteredMovies([]);
     }
-  }, [savedMovies, location, shortMovies]);
+  }, [searchRequest, shortMovies]);
 
-  useEffect(() => {
-    setFilteredMovies(savedMovies);
-    savedMovies.length !== 0
-      ? setUserMessage("")
-      : setUserMessage("Ничего не найдено");
-  }, [savedMovies]);
-  
+  // const handleShortsFilms = () => {
+  //   if (!shortMovies) {
+  //     setShortMovies(true);
+  //     localStorage.setItem("shortSavedMovies", true);
+  //     setShowedMovies(filterShorts(filteredMovies));
+  //     filterShorts(filteredMovies).length === 0
+  //       ? setUserMessage("Ничего не найдено")
+  //       : setUserMessage("");
+  //   } else {
+  //     setShortMovies(false);
+  //     localStorage.setItem("shortSavedMovies", false);
+  //     filteredMovies.length === 0
+  //       ? setUserMessage("Ничего не найдено")
+  //       : setUserMessage("");
+  //     setShowedMovies(filteredMovies);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("shortSavedMovies") === "true") {
+  //     setShowedMovies(filterShorts(savedMovies));
+  //   } else {
+  //     const moviesList = filterMovies(savedMovies, searchRequest, shortMovies);
+  //     setShowedMovies(moviesList);
+  //   }
+  // }, [savedMovies, location, shortMovies]);
+
+  // useEffect(() => {
+  //   // setFilteredMovies(savedMovies);
+  //   savedMovies.length !== 0
+  //     ? setUserMessage("")
+  //     : setUserMessage("Ничего не найдено");
+  // }, [savedMovies]);
+
   return (
     <>
       <Header loggedIn={loggedIn} />
-      <SearchForm
-        onSearchMovies={handleSearchSubmit}
-        onFilter={handleShortsFilms}
-        shortMovies={shortMovies}
-        isSavedMoviesPage={true}
-      />
+      <SearchForm onSearchMovies={handleSearchSubmit} />
       {userMessage ? (
         <span className="message">{userMessage}</span>
       ) : (
@@ -87,7 +98,7 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
       {!isLoading && (
         <MoviesCardList
           isSavedMoviesPage={true}
-          movies={showedMovies}
+          movies={filteredMovies.length === 0 ? savedMovies : filterMovies}
           savedMovies={savedMovies}
           changeSave={changeSave}
         />

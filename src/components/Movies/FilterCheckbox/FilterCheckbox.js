@@ -3,6 +3,7 @@ function FilterCheckbox({ isMovieFilter, onFilter }) {
   return (
     <section className="filter" aria-label="Фильтр">
       <input
+        name="isShort"
         type="checkbox"
         id="checkbox"
         className="filter__checkbox"
