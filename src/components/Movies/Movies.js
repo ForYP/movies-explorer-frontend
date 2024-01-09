@@ -6,14 +6,10 @@ import Footer from "../Footer/Footer";
 import Preloader from "../Movies/Preloader/Preloader";
 
 import { filterMovies } from "../../utils/utils";
-// import { useLocation } from "react-router-dom";
 import moviesApi from "../../utils/MoviesApi";
 
-function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave }) {
-  // const [shortMovies, setShortMovies] = useState(false);
-  // const [initialMovies, setInitialMovies] = useState([]);
+function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave, isAllMovies, setIsAllMovies }) {
   const [filteredMovies, setFilteredMovies] = useState([]);
-  const [isAllMovies, setIsAllMovies] = useState(JSON.parse(localStorage.getItem("movies")) ?? []);
   const [userMessage, setUserMessage] = useState("");
   const [savedUserRequest] = useState(
     localStorage.getItem("allFilmsSearch") ?? ""
@@ -22,8 +18,6 @@ function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave }) {
     JSON.parse(localStorage.getItem("allFilmsShort")) ?? false
   );
 
-  // const location = useLocation();
-
   const handleFilteredMovies = (movies, userRequest, shortMoviesCheckbox) => {
     const moviesList = filterMovies(movies, userRequest, shortMoviesCheckbox);
     if (moviesList.length === 0) {
@@ -31,23 +25,27 @@ function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave }) {
     } else {
       setUserMessage("");
     }
-    // setInitialMovies(moviesList);
+
     setFilteredMovies(moviesList);
     localStorage.setItem("movies", JSON.stringify(moviesList));
   };
 
   const handleSearchSubmit = (inputValue, checkboxState) => {
+    localStorage.setItem("allFilmsSearch", inputValue);
+    localStorage.setItem("allFilmsShort", JSON.stringify(checkboxState));
     if (inputValue === undefined || inputValue.trim().length === 0) {
-      handleFilteredMovies(isAllMovies, inputValue, checkboxState);
+      if (checkboxState) {
+        handleFilteredMovies(isAllMovies, inputValue, checkboxState);
+      } else {
+        setFilteredMovies([]);
+      }
+
       setUserMessage("Нужно ввести ключевое слово");
       setTimeout(() => {
         setUserMessage("");
       }, 2000);
       return;
     }
-
-    localStorage.setItem("allFilmsSearch", inputValue);
-    localStorage.setItem("allFilmsShort", JSON.stringify(checkboxState));
 
     if (isAllMovies.length === 0) {
       onLoading(true);
@@ -70,39 +68,6 @@ function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave }) {
       handleFilteredMovies(isAllMovies, inputValue, checkboxState);
     }
   };
-
-  // const handleShortsFilms = () => {
-  //   setShortMovies(!shortMovies);
-  //   if (!shortMovies) {
-  //     setFilteredMovies(filterShorts(initialMovies));
-  //     if (filterMovies.length === 0) {
-  //       setUserMessage("Ничего не найдено");
-  //     }
-  //   } else {
-  //     setFilteredMovies(initialMovies);
-  //   }
-  //   localStorage.setItem("shortMovies", !shortMovies);
-  // };
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("shortMovies") === "true") {
-  //     setShortMovies(true);
-  //   } else {
-  //     setShortMovies(false);
-  //   }
-  // }, [location]);
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("movies")) {
-  //     const movies = JSON.parse(localStorage.getItem("movies"));
-  //     setFiltreAddMovies(movies);
-  //     if (localStorage.getItem("shortMovies") === "true") {
-  //       setFilteredMovies(filterShorts(movies));
-  //     } else {
-  //       setFilteredMovies(movies);
-  //     }
-  //   }
-  // }, []);
 
   return (
     <>

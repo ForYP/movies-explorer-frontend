@@ -1,32 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import searchIcon from "../../../images/search-btn.svg";
 import useForm from "../../../hooks/useForm";
-import { useLocation } from "react-router-dom";
-// const SearchForm = ({ onSearch, initialTerm, initialIsShort }) => {
-//   const { values, handleChange, resetForm, isValid } = useForm({
-//     searchMovie: initialTerm,
-//     isShort: initialIsShort,
-//   });
-//   // далее - без изменений
-// };
-function SearchForm({
-  // onSearchMovies,
-  // isSavedMoviesPage,
-  // onFilter,
-  // shortMovies,
-  onSearchMovies,
-  initialSearchMovie,
-  initialIsShort,
-}) {
-  // const location = useLocation();
+
+function SearchForm({ onSearchMovies, initialSearchMovie, initialIsShort }) {
   const { values, handleChange } = useForm({
     searchMovie: initialSearchMovie,
   });
   const [isShort, setIsShort] = useState(initialIsShort);
-  // useEffect(() => {
-  //   onSearchMovies(values.searchMovie, isShort);
-  // }, [isShort]);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -34,18 +15,9 @@ function SearchForm({
   }
 
   function handleCheckbox(event) {
-    onSearchMovies(values.searchMovie, event.target.checked );
+    onSearchMovies(values.searchMovie, event.target.checked);
     setIsShort(event.target.checked);
   }
-  // useEffect(() => {
-  //   if (
-  //     location.pathname === "/movies" &&
-  //     localStorage.getItem("movieSearch")
-  //   ) {
-  //     const searchValue = localStorage.getItem("movieSearch");
-  //     values.searchMovie = searchValue;
-  //   }
-  // }, [location]);
 
   return (
     <section className="search" aria-label="Поиск">

@@ -11,7 +11,15 @@ const Profile = ({
   userMessageError,
 }) => {
   const [isEdit, setIsEdit] = useState(true);
-  const { values, errors, handleChange, isValid, resetForm } = useForm();
+  const {
+    values,
+    errors,
+    handleChange,
+    isValid,
+    resetForm,
+    isPending,
+    setIsPending,
+  } = useForm();
   const currentUser = useContext(CurrentUserContext);
   const handleChangeUserData = () => setIsEdit(!isEdit);
 
@@ -22,10 +30,10 @@ const Profile = ({
   const handleSubmit = (event) => {
     event.preventDefault();
     onUpdateUser({
-      name: values.name,
-      email: values.email,
+      values,
+      setPendingCallback: setIsPending,
+      resetFormCallback: setIsEdit,
     });
-    setIsEdit(true);
   };
 
   return (
@@ -91,7 +99,8 @@ const Profile = ({
                 disabled={
                   !isValid ||
                   (currentUser.name === values.name &&
-                    currentUser.email === values.email)
+                    currentUser.email === values.email) ||
+                  isPending
                 }
               >
                 Сохранить

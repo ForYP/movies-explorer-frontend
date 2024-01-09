@@ -4,7 +4,6 @@ import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
 import { filterMovies } from "../../utils/utils";
-import { useLocation } from "react-router-dom";
 import Preloader from "../Movies/Preloader/Preloader";
 
 const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
@@ -13,7 +12,6 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
   const [filteredMovies, setFilteredMovies] = useState(showedMovies);
   const [searchRequest, setSearchRequest] = useState("");
   const [userMessage, setUserMessage] = useState("");
-  const location = useLocation();
 
   const handleFilteredMovies = (movies, userRequest, shortMoviesCheckbox) => {
     const moviesList = filterMovies(
@@ -26,8 +24,6 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
       setUserMessage("Ничего не найдено");
     } else {
       setUserMessage("");
-
-      // setShowedMovies(moviesList);
     }
     setFilteredMovies(moviesList);
   };
@@ -36,7 +32,7 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
     setSearchRequest(inputValue);
     setShortMovies(checkboxState);
     handleFilteredMovies(savedMovies, inputValue, checkboxState);
-    if (inputValue === undefined || inputValue.trim().length === 0) {
+    if ((inputValue === undefined || inputValue.trim().length === 0) && !checkboxState) {
       setUserMessage("Нужно ввести ключевое слово");
       setTimeout(() => {
         setUserMessage("");
@@ -51,44 +47,15 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
     }
   }, [searchRequest, shortMovies]);
 
-  // const handleShortsFilms = () => {
-  //   if (!shortMovies) {
-  //     setShortMovies(true);
-  //     localStorage.setItem("shortSavedMovies", true);
-  //     setShowedMovies(filterShorts(filteredMovies));
-  //     filterShorts(filteredMovies).length === 0
-  //       ? setUserMessage("Ничего не найдено")
-  //       : setUserMessage("");
-  //   } else {
-  //     setShortMovies(false);
-  //     localStorage.setItem("shortSavedMovies", false);
-  //     filteredMovies.length === 0
-  //       ? setUserMessage("Ничего не найдено")
-  //       : setUserMessage("");
-  //     setShowedMovies(filteredMovies);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("shortSavedMovies") === "true") {
-  //     setShowedMovies(filterShorts(savedMovies));
-  //   } else {
-  //     const moviesList = filterMovies(savedMovies, searchRequest, shortMovies);
-  //     setShowedMovies(moviesList);
-  //   }
-  // }, [savedMovies, location, shortMovies]);
-
-  // useEffect(() => {
-  //   // setFilteredMovies(savedMovies);
-  //   savedMovies.length !== 0
-  //     ? setUserMessage("")
-  //     : setUserMessage("Ничего не найдено");
-  // }, [savedMovies]);
-
+  
   return (
     <>
       <Header loggedIn={loggedIn} />
-      <SearchForm onSearchMovies={handleSearchSubmit} />
+      <SearchForm
+        onSearchMovies={handleSearchSubmit}
+        initialSearchMovie={""}
+        initialIsShort={false}
+      />
       {userMessage ? (
         <span className="message">{userMessage}</span>
       ) : (
@@ -98,7 +65,7 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
       {!isLoading && (
         <MoviesCardList
           isSavedMoviesPage={true}
-          movies={filteredMovies.length === 0 ? savedMovies : filterMovies}
+          movies={filteredMovies.length === 0 ? savedMovies : filteredMovies}
           savedMovies={savedMovies}
           changeSave={changeSave}
         />

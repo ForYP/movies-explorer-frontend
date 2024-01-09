@@ -4,11 +4,22 @@ import Logo from "../Logo/Logo";
 import useForm from "../../hooks/useForm";
 
 function Register({ onRegister, userMessageError }) {
-  const { values, errors, handleChange, isValid, resetForm } = useForm();
+  const {
+    values,
+    errors,
+    handleChange,
+    isValid,
+    resetForm,
+    isPending,
+    setIsPending,
+  } = useForm();
   const handleSubmit = (event) => {
     event.preventDefault();
-    onRegister(values);
-    resetForm();
+    onRegister({
+      values,
+      setPendingCallback: setIsPending,
+      resetFormCallback: resetForm,
+    });
   };
   return (
     <section className="register">
@@ -41,7 +52,7 @@ function Register({ onRegister, userMessageError }) {
           type="email"
           id="email"
           name="email"
-          pattern='[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}'
+          pattern="[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}"
           required
           value={values.email || ""}
           onChange={handleChange}
@@ -66,7 +77,7 @@ function Register({ onRegister, userMessageError }) {
         <button
           className="register__button"
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isPending}
         >
           Зарегистрироваться
         </button>

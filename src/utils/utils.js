@@ -17,14 +17,8 @@ export function filterShorts(movies) {
 }
 
 export function filterMovies(movies, userQuery, shortMoviesCheckbox) {
-  console.dir(movies);
   const moviesByUserQuery = movies.filter((movie) => {
-    console.dir(movie);
-    console.log(movie.nameRU);
-    const tmp = String(movie.nameRU);
-    console.log(tmp);
-    console.log(typeof tmp);
-    const movieRu = tmp.toLowerCase().trim();
+    const movieRu = String(movie.nameRU).toLowerCase().trim();
     const userMovie = userQuery.toLowerCase().trim();
 
     return movieRu.indexOf(userMovie) !== -1;

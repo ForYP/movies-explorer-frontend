@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import MoviesCard from "../MoviesCard/MoviesCard";
 
 import { checkSavedCard } from "../../../utils/utils";
 import useScreenWidth from "../../../hooks/useScreenWidth";
 
 import {
-  MOVIES_ROW_DESKTOP,
-  MOVIES_ROW_TABLET,
-  MOVIES_ROW_MOBILE,
-  MOVIES_LINE_DESKTOP,
+  MOVIES_COLS_MOBILE,
+  MOVIES_COLS_TABLET,
+  MOVIES_COLS_DESKTOP,
+  MOVIES_START_MOBILE,
+  MOVIES_START_TABLET,
+  MOVIES_START_DESKTOP,
   MOVIES_LINE_MOBILE,
-  TABLET_SCREEN,
-  MOBILE_SCREEN,
+  MOVIES_LINE_TABLET,
+  MOVIES_LINE_DESKTOP,
 } from "../../../utils/constants";
 
 function MoviesCardList({
@@ -21,38 +23,69 @@ function MoviesCardList({
   savedMovies,
   userMessage,
 }) {
-  const [showMoviesList, setShowMoviesList] = useState(movies);
-  const screenWidth = useScreenWidth();
-  const searchedMoviesCount = movies ? movies.length : 0;
+  const [showMoviesList, setShowMoviesList] = useState([]);
+  const { columnsCount } = useScreenWidth();
+  const getInitialSize = useCallback((cols) => {
+    switch (cols) {
+      case MOVIES_COLS_MOBILE: {
+        return MOVIES_START_MOBILE;
+      }
+      case MOVIES_COLS_TABLET: {
+        return MOVIES_START_TABLET;
+      }
+      case MOVIES_COLS_DESKTOP: {
+        return MOVIES_START_DESKTOP;
+      }
+      default:
+        throw new Error("Неверное количество колонок");
+    }
+  }, []);
+  const getNewLines = useCallback((cols) => {
+    switch (cols) {
+      case MOVIES_COLS_MOBILE: {
+        return MOVIES_LINE_MOBILE;
+      }
+      case MOVIES_COLS_TABLET: {
+        return MOVIES_LINE_TABLET;
+      }
+      case MOVIES_COLS_DESKTOP: {
+        return MOVIES_LINE_DESKTOP;
+      }
+      default:
+        throw new Error("Неверное количество колонок");
+    }
+  }, []);
+  
+  const [initialSize, setInitialSize] = useState(
+    getInitialSize(columnsCount)
+  );
+  const [extraRows, setExtraRows] = useState(0);
+  
+  const moviesCount = useMemo(
+    () => initialSize + extraRows * columnsCount,
+    [columnsCount, extraRows, initialSize]
+  );
+  const isFullView = useMemo(
+    () => {
+      
+     return movies.length - moviesCount < getNewLines(columnsCount)
+    },
+    [columnsCount, movies.length, moviesCount, getNewLines]
+  );
+
+  useEffect(() => {
+    setInitialSize(getInitialSize(columnsCount));
+    setExtraRows(0);
+  }, [columnsCount, getInitialSize]);
+
+  useEffect(() => {
+    setShowMoviesList(isFullView ? movies : movies.slice(0, moviesCount));
+  }, [isFullView, movies, moviesCount]);
 
   const handleMoreClick = () => {
-    if (screenWidth > TABLET_SCREEN) {
-      setShowMoviesList(
-        movies.slice(
-          0,
-          showMoviesList.length + MOVIES_LINE_DESKTOP
-        )
-      );
-    } else {
-      setShowMoviesList(
-        movies.slice(
-          0,
-          showMoviesList.length + MOVIES_LINE_MOBILE
-        )
-      );
-    }
+    setExtraRows((rows) => rows + getNewLines(columnsCount));
   };
-  useEffect(() => {
-    if (screenWidth > TABLET_SCREEN) {
-      setShowMoviesList(movies.slice(0, MOVIES_ROW_DESKTOP));
-    } else if (screenWidth > MOBILE_SCREEN && screenWidth <= TABLET_SCREEN) {
-      setShowMoviesList(movies.slice(0, MOVIES_ROW_TABLET));
-    } else if (screenWidth <= MOBILE_SCREEN) {
-      setShowMoviesList(movies.slice(0, MOVIES_ROW_MOBILE));
-    } else {
-      setShowMoviesList(movies);
-    }
-  }, [screenWidth, movies]);
+ 
 
   return (
     <section className="cards" aria-label="Фильмы">
@@ -63,7 +96,7 @@ function MoviesCardList({
       )}
 
       <ul className="cards__list">
-        {showMoviesList.sort().map((movie) => {
+        {showMoviesList.map((movie) => {
           return (
             <MoviesCard
               key={isSavedMoviesPage ? movie.movieId : movie.id}
@@ -75,13 +108,11 @@ function MoviesCardList({
           );
         })}
       </ul>
-      {!isSavedMoviesPage &&
-        showMoviesList &&
-        searchedMoviesCount !== showMoviesList.length && (
-          <button className={"cards__button"} onClick={handleMoreClick}>
-            Ещё
-          </button>
-        )}
+      {!isSavedMoviesPage && showMoviesList.length > 0 && !isFullView && (
+        <button className={"cards__button"} onClick={handleMoreClick}>
+          Ещё
+        </button>
+      )}
     </section>
   );
 }

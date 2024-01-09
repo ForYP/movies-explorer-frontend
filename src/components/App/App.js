@@ -25,14 +25,23 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [userMessage, setUserMessage] = useState("");
   const [userMessageError, setUserMessageError] = useState("");
+  const [allMovies, setAllMovies] = useState(
+    JSON.parse(localStorage.getItem("movies")) ?? []
+  );
 
   /* РЕГИСТРАЦИЯ */
 
-  function handleRegister({ name, email, password }) {
+  function handleRegister({
+    values: { name, email, password },
+    setPendingCallback,
+    resetFormCallback,
+  }) {
+    setPendingCallback(true);
     return mainApi
       .register(name, email, password)
       .then(() => {
         handleLogin({ email, password });
+        resetFormCallback();
       })
       .catch((error) => {
         console.log(error);
@@ -40,12 +49,20 @@ function App() {
         setTimeout(() => {
           setUserMessageError("");
         }, 2000);
+      })
+      .finally(() => {
+        setPendingCallback(false);
       });
   }
 
   /* ВХОД */
 
-  function handleLogin({ email, password }) {
+  function handleLogin({
+    values: { email, password },
+    setPendingCallback,
+    resetFormCallback,
+  }) {
+    setPendingCallback(true);
     return mainApi
       .login(email, password)
       .then(({ token }) => {
@@ -55,6 +72,7 @@ function App() {
             setCurrentUser(user);
             setSavedMovies(movies);
             setIsLoggedIn(true);
+            resetFormCallback();
             navigate("/movies");
           }
         );
@@ -65,18 +83,21 @@ function App() {
         setTimeout(() => {
           setUserMessageError("");
         }, 2000);
+      })
+      .finally(() => {
+        setPendingCallback(false);
       });
   }
 
   /* РЕДАКТИРОВАНИЕ ПРОФИЛЯ */
 
-  function handleUpdateUser(newUserInfo) {
-    const jwt = localStorage.getItem("jwt");
-    setIsLoading(true);
+  function handleUpdateUser({ values, setPendingCallback, resetFormCallback }) {
+    setPendingCallback(true);
     mainApi
-      .setUserInfo(newUserInfo, jwt)
+      .setUserInfo(values)
       .then((user) => {
         setCurrentUser(user);
+        resetFormCallback(true);
         setUserMessage("Профиль отредактирован успешно");
         setUserMessageError("");
         setTimeout(() => {
@@ -88,7 +109,7 @@ function App() {
         setUserMessageError("При обновлении профиля произошла ошибка");
       })
       .finally(() => {
-        setIsLoading(false);
+        setPendingCallback(false);
       });
   }
 
@@ -179,14 +200,14 @@ function App() {
   function handleSignOut() {
     setCurrentUser({});
     setSavedMovies([]);
+    setAllMovies([]);
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
+    localStorage.removeItem("savedMovies");
     localStorage.removeItem("movies");
     localStorage.removeItem("allMovies");
-    localStorage.removeItem("savedMovies");
-    localStorage.removeItem("shortMovies");
-    localStorage.removeItem("movieSearch");
-    localStorage.removeItem("shortSavedMovies");
+    localStorage.removeItem("allFilmsSearch");
+    localStorage.removeItem("allFilmsShort");
     navigate("/");
   }
 
@@ -200,6 +221,8 @@ function App() {
             element={
               <ProtectedRoute loggedIn={isLoggedIn}>
                 <Movies
+                  isAllMovies={allMovies}
+                  setIsAllMovies={setAllMovies}
                   loggedIn={isLoggedIn}
                   isLoading={isLoading}
                   onLoading={setIsLoading}

@@ -4,14 +4,26 @@ import useForm from "../../hooks/useForm";
 import Logo from "../Logo/Logo";
 
 function Login({ onLogin, userMessageError }) {
-  const { values, errors, handleChange, isValid, resetForm } = useForm();
+  const {
+    values,
+    errors,
+    handleChange,
+    isValid,
+    resetForm,
+    setIsPending,
+    isPending,
+  } = useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!values.email || !values.password) {
       return;
     }
-    onLogin(values);
+    onLogin({
+      values,
+      setPendingCallback: setIsPending,
+      resetFormCallback: resetForm,
+    });
   };
 
   return (
@@ -51,7 +63,11 @@ function Login({ onLogin, userMessageError }) {
         />
         <span className="login__error">{errors.password}</span>
         <span className="login__error">{userMessageError}</span>
-        <button className="login__button" type="submit" disabled={!isValid}>
+        <button
+          className="login__button"
+          type="submit"
+          disabled={!isValid || isPending}
+        >
           Войти
         </button>
       </form>

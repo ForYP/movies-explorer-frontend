@@ -38,6 +38,8 @@ const useForm = (initialValues = {}) => {
     handleChange,
     isValid,
     resetForm,
+    isPending,
+    setIsPending,
   };
 };
 
