@@ -40,7 +40,7 @@ function App() {
     return mainApi
       .register(name, email, password)
       .then(() => {
-        handleLogin({ email, password });
+        handleLogin({ values: { email, password } });
         resetFormCallback();
       })
       .catch((error) => {
@@ -59,8 +59,8 @@ function App() {
 
   function handleLogin({
     values: { email, password },
-    setPendingCallback,
-    resetFormCallback,
+    setPendingCallback = () => {},
+    resetFormCallback = () => {},
   }) {
     setPendingCallback(true);
     return mainApi
@@ -150,7 +150,7 @@ function App() {
       mainApi
         .saveMovie(movie, jwt)
         .then((newSavedMovie) => {
-          setSavedMovies((prev) => [...prev, newSavedMovie]);
+          setSavedMovies((prev) => [newSavedMovie, ...prev]);
         })
         .catch((error) => {
           console.log(error);

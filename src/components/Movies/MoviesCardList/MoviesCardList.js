@@ -79,8 +79,8 @@ function MoviesCardList({
   }, [columnsCount, getInitialSize]);
 
   useEffect(() => {
-    setShowMoviesList(isFullView ? movies : movies.slice(0, moviesCount));
-  }, [isFullView, movies, moviesCount]);
+    setShowMoviesList((isFullView || isSavedMoviesPage) ? movies : movies.slice(0, moviesCount));
+  }, [isFullView, movies, moviesCount, isSavedMoviesPage]);
 
   const handleMoreClick = () => {
     setExtraRows((rows) => rows + getNewLines(columnsCount));

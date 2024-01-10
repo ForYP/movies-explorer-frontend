@@ -84,7 +84,7 @@ const Profile = ({
               <button className="profile__edit" onClick={handleChangeUserData}>
                 Редактировать
               </button>
-              <button className="profile__logout" onClick={() => onSignOut()}>
+              <button className="profile__logout" type="button" onClick={() => onSignOut()}>
                 Выйти из аккаунта
               </button>
             </div>

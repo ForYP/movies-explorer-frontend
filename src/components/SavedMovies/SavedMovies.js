@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../Header/Header";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
 import Footer from "../Footer/Footer";
 import { filterMovies } from "../../utils/utils";
 import Preloader from "../Movies/Preloader/Preloader";
+import { useCallback } from "react";
 
 const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
   const [shortMovies, setShortMovies] = useState(false);
@@ -12,27 +13,33 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
   const [filteredMovies, setFilteredMovies] = useState(showedMovies);
   const [searchRequest, setSearchRequest] = useState("");
   const [userMessage, setUserMessage] = useState("");
+  const searchRequestRef = useRef("");
+  const shortMoviesRef = useRef(false);
 
-  const handleFilteredMovies = (movies, userRequest, shortMoviesCheckbox) => {
-    const moviesList = filterMovies(
-      savedMovies,
-      userRequest,
-      shortMoviesCheckbox
-    );
+  const handleFilteredMovies = useCallback(
+    (movies, userRequest, shortMoviesCheckbox) => {
+      const moviesList = filterMovies(movies, userRequest, shortMoviesCheckbox);
 
-    if (moviesList.length === 0) {
-      setUserMessage("Ничего не найдено");
-    } else {
-      setUserMessage("");
-    }
-    setFilteredMovies(moviesList);
-  };
+      if (moviesList.length === 0) {
+        setUserMessage("Ничего не найдено");
+      } else {
+        setUserMessage("");
+      }
+      setFilteredMovies(moviesList);
+    },
+    []
+  );
 
   const handleSearchSubmit = (inputValue, checkboxState) => {
+    searchRequestRef.current = inputValue;
+    shortMoviesRef.current = checkboxState;
     setSearchRequest(inputValue);
     setShortMovies(checkboxState);
     handleFilteredMovies(savedMovies, inputValue, checkboxState);
-    if ((inputValue === undefined || inputValue.trim().length === 0) && !checkboxState) {
+    if (
+      (inputValue === undefined || inputValue.trim().length === 0) &&
+      !checkboxState
+    ) {
       setUserMessage("Нужно ввести ключевое слово");
       setTimeout(() => {
         setUserMessage("");
@@ -42,12 +49,19 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
   };
 
   useEffect(() => {
+    handleFilteredMovies(
+      savedMovies,
+      searchRequestRef.current,
+      shortMoviesRef.current
+    );
+  }, [savedMovies, handleFilteredMovies]);
+
+  useEffect(() => {
     if ((!searchRequest || searchRequest.length === 0) && !shortMovies) {
       setFilteredMovies([]);
     }
   }, [searchRequest, shortMovies]);
 
-  
   return (
     <>
       <Header loggedIn={loggedIn} />
@@ -65,7 +79,11 @@ const SavedMovies = ({ loggedIn, savedMovies, isLoading, changeSave }) => {
       {!isLoading && (
         <MoviesCardList
           isSavedMoviesPage={true}
-          movies={filteredMovies.length === 0 ? savedMovies : filteredMovies}
+          movies={
+            filteredMovies.length === 0 && !shortMovies
+              ? savedMovies
+              : filteredMovies
+          }
           savedMovies={savedMovies}
           changeSave={changeSave}
         />
