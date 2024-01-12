@@ -85,6 +85,10 @@ function MoviesCardList({
   const handleMoreClick = () => {
     setExtraRows((rows) => rows + getNewLines(columnsCount));
   };
+
+  useEffect(() => {
+    setExtraRows(0);
+  }, [movies]);
  
 
   return (
