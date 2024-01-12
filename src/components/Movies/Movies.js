@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
 import SearchForm from "../Movies/SearchForm/SearchForm";
 import MoviesCardList from "../Movies/MoviesCardList/MoviesCardList";
@@ -68,6 +68,14 @@ function Movies({ loggedIn, onLoading, isLoading, savedMovies, changeSave, isAll
       handleFilteredMovies(isAllMovies, inputValue, checkboxState);
     }
   };
+
+  useEffect(() => {
+    const savedMovies = 
+   JSON.parse(localStorage.getItem('movies'));  
+    if (savedMovies && savedMovies.length > 0) {
+    setFilteredMovies(savedMovies);
+    }
+  },[]);
 
   return (
     <>
