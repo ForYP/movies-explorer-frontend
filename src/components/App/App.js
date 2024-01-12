@@ -26,7 +26,7 @@ function App() {
   const [userMessage, setUserMessage] = useState("");
   const [userMessageError, setUserMessageError] = useState("");
   const [allMovies, setAllMovies] = useState(
-    JSON.parse(localStorage.getItem("movies")) ?? []
+    JSON.parse(localStorage.getItem("allMovies")) ?? []
   );
 
   /* РЕГИСТРАЦИЯ */
