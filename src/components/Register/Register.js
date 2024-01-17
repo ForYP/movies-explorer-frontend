@@ -1,15 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from "../Logo/Logo";
+import useForm from "../../hooks/useForm";
 
-function Register() {
+function Register({ onRegister, userMessageError }) {
+  const {
+    values,
+    errors,
+    handleChange,
+    isValid,
+    resetForm,
+    isPending,
+    setIsPending,
+  } = useForm();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onRegister({
+      values,
+      setPendingCallback: setIsPending,
+      resetFormCallback: resetForm,
+    });
+  };
   return (
     <section className="register">
       <div className="register__header">
         <Logo />
         <h1 className="register__title">Добро пожаловать!</h1>
       </div>
-      <form className="register__form">
+      <form className="register__form form" onSubmit={handleSubmit}>
         <label className="register__label" htmlFor="name">
           Имя
         </label>
@@ -18,10 +36,14 @@ function Register() {
           type="text"
           id="name"
           name="name"
+          minLength={2}
+          maxLength={30}
           required
-          value="Сергей"
+          value={values.name || ""}
+          onChange={handleChange}
+          placeholder="Имя"
         />
-        <span className="register__error"></span>
+        <span className="register__error">{errors.name}</span>
         <label className="register__label" htmlFor="email">
           E-mail
         </label>
@@ -30,10 +52,13 @@ function Register() {
           type="email"
           id="email"
           name="email"
+          pattern="[a-z0-9]+@[a-z0-9]+\.[a-z0-9]{2,3}"
           required
-          value="pochta@yandex.ru"
+          value={values.email || ""}
+          onChange={handleChange}
+          placeholder="E-mail"
         />
-        <span className="register__error"></span>
+        <span className="register__error">{errors.email}</span>
         <label className="register__label" htmlFor="password">
           Пароль
         </label>
@@ -43,10 +68,17 @@ function Register() {
           id="password"
           name="password"
           required
-          value="••••••••••••••"
+          value={values.password || ""}
+          onChange={handleChange}
+          placeholder="Пароль"
         />
-        <span className="register__error">Что-то пошло не так...</span>
-        <button className="register__button" type="submit">
+        <span className="register__error">{errors.password}</span>
+        <span className="register__error">{userMessageError}</span>
+        <button
+          className="register__button"
+          type="submit"
+          disabled={!isValid || isPending}
+        >
           Зарегистрироваться
         </button>
       </form>
